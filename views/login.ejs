@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+    <style>
+        .emailError, .passwordError {color:rgb(224, 19, 19)}
+    </style>
+</head>
+<body>
+   
+    <form>
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" placeholder="type your name" id="email" required  name="email">
+            <div class="emailError"></div>
+        </div>
+
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" placeholder="type your age" id="password" required name="password">
+            <div class="passwordError"></div>
+        </div>
+
+        <div><button type="submit">Submit</button></div>
+    </form>
+    <script>
+        const form = document.querySelector("form");
+        const emailError = document.querySelector(".emailError");
+        const passwordError = document.querySelector(".passwordError");
+  
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+  
+          const email = form.email.value;
+          const password = form.password.value;
+          console.log(email, password);
+  
+          const res = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const result = await res.json();
+          if (result.success) {
+            location.assign("/dashboard");
+          } else {
+            emailError.textContent = result.errors.email;
+            passwordError.textContent = result.errors.password;
+          }
+        });
+      </script>
+</body>
+</html>

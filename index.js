@@ -5,16 +5,22 @@ const port = 2000;
 const mongoose = require('mongoose');
 const notFound = require('./middleware/notFound')
 mongoose.set("strictQuery", true);
-const userRouter = require('./routes/userRouter')
+// const userRouter = require('./routes/userRouter')
+const newRouter = require('./routes/newUserRouter')
+app.set("view engine", "ejs")
 
 
 
 // middleware
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 
 // routes
-app.use(userRouter)
+// app.use(userRouter)
+app.use(newRouter)
+
+
 
 
 

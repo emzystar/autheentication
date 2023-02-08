@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign up</title>
+  </head>
+  <body>
+    <form>
+      <div>
+        <label for="email">Email:</label>
+        <input
+          type="text"
+          placeholder="type your name"
+          id="email"
+          required
+          name="email"
+        /><br />
+        <div class="emailError"></div>
+      </div>
+
+      <div>
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          placeholder="type your age"
+          id="password"
+          required
+          name="password"
+        /><br />
+        <div class="passwordError"></div>
+      </div>
+
+      <div><button type="submit">Sign up</button></div>
+    </form>
+    <script>
+      const form = document.querySelector("form");
+      const emailError = document.querySelector(".emailError");
+      const passwordError = document.querySelector(".passwordError");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = form.email.value;
+        const password = form.password.value;
+        console.log(email, password);
+
+        const res = await fetch("/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const result = await res.json();
+        if (result.success) {
+          location.assign("/login");
+        } else {
+          emailError.textContent = result.errors.email;
+          passwordError.textContent = result.errors.password;
+        }
+      });
+    </script>
+  </body>
+</html>
