@@ -1,5 +1,11 @@
 const User = require("../model/user");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+
+// header, payload- Id, signature
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '3d'})
+}
 
 const handleError = (err) => {
   // error messages codes - 11000
@@ -35,6 +41,11 @@ const getDashboardPage = (req, res) => {
     res.render('dashboard')
 }
 
+const logout = (req, res) => {
+  res.cookie('jwt', ' ',{ maxAge: 1000})
+  res.redirect('/login')
+}
+
 const register = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -60,6 +71,12 @@ const login = async (req, res) => {
     if (user) {
       const authenticated = await bcrypt.compare(password, user.password);
       if (authenticated) {
+
+        // set token
+
+      const token = generateToken(user._id);
+      const time = 3 * 24 * 60 * 60 * 1000;
+      res.cookie("jwt", token, {maxAge: time})
         return res.status(200).json({ success: true, data: user });
       }
       throw Error("invalid email or password");
@@ -72,4 +89,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getRegisteredPage, getLoginPage, getDashboardPage};
+module.exports = { register, login, getRegisteredPage, getLoginPage, getDashboardPage, logout};
